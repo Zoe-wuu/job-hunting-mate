@@ -1,63 +1,69 @@
 import { useState, useCallback } from "react";
 import type { JobRecord, OutputTab } from "@/types/job";
 
-const MOCK_RECORDS: JobRecord[] = [
-  {
-    id: "1",
-    company: "微软 (Microsoft)",
-    position: "PM",
-    date: "2026/03/26",
+const EMPTY_OUTPUTS = { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" };
+const EMPTY_PROMPTS = { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" };
+
+function createRecord(company: string, jd: string, resume: string): JobRecord {
+  const pos = company ? company.split("-").pop()?.trim() || "岗位" : "岗位";
+  return {
+    id: crypto.randomUUID(),
+    company: company || "未命名公司",
+    position: pos,
+    date: new Date().toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, "/"),
     status: "active",
-    jd: "We are looking for a Product Manager to lead our AI platform team...",
-    resume: "3年互联网产品经验，负责过DAU百万级产品的从0到1...",
-    outputs: { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" },
-    prompts: { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" },
-  },
-  {
-    id: "2",
-    company: "Apple",
-    position: "运营",
-    date: "2026/03/20",
-    status: "active",
-    jd: "",
-    resume: "",
-    outputs: { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" },
-    prompts: { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" },
-  },
-  {
-    id: "3",
-    company: "Meta",
-    position: "DA",
-    date: "2026/02/15",
-    status: "rejected",
-    jd: "",
-    resume: "",
-    outputs: { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" },
-    prompts: { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" },
-  },
-];
+    jd,
+    resume,
+    outputs: { ...EMPTY_OUTPUTS },
+    prompts: { ...EMPTY_PROMPTS },
+  };
+}
+
+const TAB_TO_KEY: Record<OutputTab, keyof JobRecord["outputs"]> = {
+  jd: "jdTranslation",
+  daily: "dailyLife",
+  resume: "resumeOptimized",
+  cover: "coverLetter",
+};
 
 export function useJobStore() {
-  const [records, setRecords] = useState<JobRecord[]>(MOCK_RECORDS);
+  const [records, setRecords] = useState<JobRecord[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OutputTab>("jd");
 
-  // Current input state (when no record selected)
   const [company, setCompany] = useState("");
   const [jd, setJd] = useState("");
   const [resume, setResume] = useState("");
   const [loading, setLoading] = useState<OutputTab | "all" | null>(null);
 
+  // Live streaming content per tab
+  const [outputs, setOutputs] = useState<Record<OutputTab, string>>({
+    jd: "", daily: "", resume: "", cover: "",
+  });
+
+  const [userPrompts, setUserPrompts] = useState<Record<OutputTab, string>>({
+    jd: "", daily: "", resume: "", cover: "",
+  });
+
   const selectedRecord = records.find((r) => r.id === selectedId) || null;
 
   const selectRecord = useCallback((id: string) => {
     setSelectedId(id);
-    const rec = MOCK_RECORDS.find((r) => r.id === id);
-    if (rec) {
-      setCompany(rec.company);
-      setJd(rec.jd);
-      setResume(rec.resume);
-    }
+    setRecords((prev) => {
+      const rec = prev.find((r) => r.id === id);
+      if (rec) {
+        setCompany(rec.company);
+        setJd(rec.jd);
+        setResume(rec.resume);
+        setOutputs({
+          jd: rec.outputs.jdTranslation,
+          daily: rec.outputs.dailyLife,
+          resume: rec.outputs.resumeOptimized,
+          cover: rec.outputs.coverLetter,
+        });
+      }
+      return prev;
+    });
   }, []);
 
   const deleteRecord = useCallback((id: string) => {
@@ -67,31 +73,45 @@ export function useJobStore() {
       setCompany("");
       setJd("");
       setResume("");
+      setOutputs({ jd: "", daily: "", resume: "", cover: "" });
     }
   }, [selectedId]);
-
-  const updateRecordStatus = useCallback((id: string, status: JobRecord["status"]) => {
-    setRecords((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
-  }, []);
 
   const clearInputs = useCallback(() => {
     setSelectedId(null);
     setCompany("");
     setJd("");
     setResume("");
+    setOutputs({ jd: "", daily: "", resume: "", cover: "" });
   }, []);
 
-  const updateOutput = useCallback((tab: OutputTab, content: string) => {
-    if (selectedId) {
-      setRecords((prev) =>
-        prev.map((r) =>
-          r.id === selectedId
-            ? { ...r, outputs: { ...r.outputs, [tabToKey(tab)]: content } }
-            : r
-        )
-      );
-    }
-  }, [selectedId]);
+  // Ensure a record exists for current inputs, return its id
+  const ensureRecord = useCallback((): string => {
+    if (selectedId) return selectedId;
+    const rec = createRecord(company, jd, resume);
+    setRecords((prev) => [rec, ...prev]);
+    setSelectedId(rec.id);
+    return rec.id;
+  }, [selectedId, company, jd, resume]);
+
+  const appendOutput = useCallback((tab: OutputTab, chunk: string) => {
+    setOutputs((prev) => ({ ...prev, [tab]: prev[tab] + chunk }));
+  }, []);
+
+  const clearOutput = useCallback((tab: OutputTab) => {
+    setOutputs((prev) => ({ ...prev, [tab]: "" }));
+  }, []);
+
+  // Save current output to the record
+  const saveOutputToRecord = useCallback((recordId: string, tab: OutputTab, content: string) => {
+    setRecords((prev) =>
+      prev.map((r) =>
+        r.id === recordId
+          ? { ...r, outputs: { ...r.outputs, [TAB_TO_KEY[tab]]: content } }
+          : r
+      )
+    );
+  }, []);
 
   return {
     records,
@@ -107,20 +127,15 @@ export function useJobStore() {
     setResume,
     loading,
     setLoading,
+    outputs,
+    userPrompts,
+    setUserPrompts,
     selectRecord,
     deleteRecord,
-    updateRecordStatus,
     clearInputs,
-    updateOutput,
+    ensureRecord,
+    appendOutput,
+    clearOutput,
+    saveOutputToRecord,
   };
-}
-
-function tabToKey(tab: OutputTab): keyof JobRecord["outputs"] {
-  const map: Record<OutputTab, keyof JobRecord["outputs"]> = {
-    jd: "jdTranslation",
-    daily: "dailyLife",
-    resume: "resumeOptimized",
-    cover: "coverLetter",
-  };
-  return map[tab];
 }

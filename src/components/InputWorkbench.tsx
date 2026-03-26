@@ -12,6 +12,8 @@ interface Props {
   setResume: (v: string) => void;
   loading: OutputTab | "all" | null;
   onExecute: (tab: OutputTab | "all") => void;
+  userPrompts: Record<OutputTab, string>;
+  setUserPrompts: React.Dispatch<React.SetStateAction<Record<OutputTab, string>>>;
 }
 
 const ACTIONS: { tab: OutputTab; label: string; icon: React.ReactNode }[] = [
@@ -37,20 +39,15 @@ export default function InputWorkbench({
   setResume,
   loading,
   onExecute,
+  userPrompts,
+  setUserPrompts,
 }: Props) {
   const [configTab, setConfigTab] = useState<OutputTab | null>(null);
-  const [userPrompts, setUserPrompts] = useState<Record<OutputTab, string>>({
-    jd: "",
-    daily: "",
-    resume: "",
-    cover: "",
-  });
 
   const canExecute = jd.trim().length > 0 && resume.trim().length > 0;
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
       <div className="px-6 pt-5 pb-3">
         <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
           📥 工作台
@@ -58,9 +55,7 @@ export default function InputWorkbench({
         <p className="text-xs text-muted-foreground mt-0.5">输入 JD 和简历，让 AI 帮你拆解战略</p>
       </div>
 
-      {/* Inputs */}
       <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-4">
-        {/* Company */}
         <div>
           <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
             🏢 目标公司（选填）
@@ -73,7 +68,6 @@ export default function InputWorkbench({
           />
         </div>
 
-        {/* JD */}
         <div>
           <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
             📄 目标岗位 JD <span className="text-destructive">*</span>
@@ -87,7 +81,6 @@ export default function InputWorkbench({
           />
         </div>
 
-        {/* Resume */}
         <div>
           <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
             📝 你的简历 / 核心经历 <span className="text-destructive">*</span>
@@ -101,7 +94,6 @@ export default function InputWorkbench({
           />
         </div>
 
-        {/* Engine Console */}
         <div className="pt-2">
           <h3 className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
             ⚡ AI 引擎控制台
@@ -113,7 +105,7 @@ export default function InputWorkbench({
                   disabled={!canExecute || loading !== null}
                   onClick={() => onExecute(tab)}
                   className={`w-full flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-all ${
-                    canExecute && loading !== tab
+                    canExecute && loading !== tab && loading !== "all"
                       ? "bg-card border border-border hover:border-primary/30 hover:shadow-soft text-foreground"
                       : loading === tab || loading === "all"
                       ? "bg-primary/10 border border-primary/30 text-primary animate-pulse"
@@ -134,12 +126,11 @@ export default function InputWorkbench({
             ))}
           </div>
 
-          {/* Magic Button */}
           <button
             disabled={!canExecute || loading !== null}
             onClick={() => onExecute("all")}
             className={`w-full mt-3 flex items-center justify-center gap-2 px-4 py-3.5 rounded-lg text-sm font-bold transition-all ${
-              canExecute
+              canExecute && loading === null
                 ? "gradient-accent text-accent-foreground hover:opacity-90 shadow-medium animate-pulse-glow"
                 : "bg-muted text-muted-foreground/40 cursor-not-allowed"
             }`}
@@ -156,7 +147,6 @@ export default function InputWorkbench({
         </div>
       </div>
 
-      {/* Prompt Config Modal */}
       <PromptConfigModal
         open={configTab !== null}
         tab={configTab}
