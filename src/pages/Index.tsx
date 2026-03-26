@@ -3,20 +3,67 @@ import HistorySidebar from "@/components/HistorySidebar";
 import InputWorkbench from "@/components/InputWorkbench";
 import OutputPanel from "@/components/OutputPanel";
 import { useJobStore } from "@/store/useJobStore";
+import { streamJobAI } from "@/services/jobAI";
 import type { OutputTab } from "@/types/job";
+import { toast } from "sonner";
+import { useCallback, useRef } from "react";
+
+const ALL_TABS: OutputTab[] = ["jd", "daily", "resume", "cover"];
 
 export default function Index() {
   const store = useJobStore();
+  const runningRef = useRef(false);
 
-  const handleExecute = (tab: OutputTab | "all") => {
+  const runSingleTab = useCallback(async (tab: OutputTab, recordId: string) => {
+    store.clearOutput(tab);
+    store.setActiveTab(tab);
+
+    let accumulated = "";
+    await new Promise<void>((resolve) => {
+      streamJobAI({
+        type: tab,
+        company: store.company,
+        jd: store.jd,
+        resume: store.resume,
+        userPrompt: store.userPrompts[tab],
+        onDelta: (chunk) => {
+          accumulated += chunk;
+          store.appendOutput(tab, chunk);
+        },
+        onDone: () => {
+          store.saveOutputToRecord(recordId, tab, accumulated);
+          resolve();
+        },
+        onError: (err) => {
+          toast.error(err);
+          resolve();
+        },
+      });
+    });
+  }, [store]);
+
+  const handleExecute = useCallback(async (tab: OutputTab | "all") => {
+    if (runningRef.current) return;
+    runningRef.current = true;
+
+    const recordId = store.ensureRecord();
     store.setLoading(tab);
-    if (tab !== "all") store.setActiveTab(tab);
-    // Simulate AI generation
-    setTimeout(() => {
+
+    try {
+      if (tab === "all") {
+        for (const t of ALL_TABS) {
+          store.setLoading(t);
+          await runSingleTab(t, recordId);
+        }
+        store.setActiveTab("jd");
+      } else {
+        await runSingleTab(tab, recordId);
+      }
+    } finally {
       store.setLoading(null);
-      if (tab === "all") store.setActiveTab("jd");
-    }, 2000);
-  };
+      runningRef.current = false;
+    }
+  }, [store, runSingleTab]);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background">
@@ -36,7 +83,6 @@ export default function Index() {
 
       {/* Main 3-col Layout */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left - History */}
         <div className="w-64 shrink-0 border-r border-border overflow-hidden">
           <HistorySidebar
             records={store.records}
@@ -47,7 +93,6 @@ export default function Index() {
           />
         </div>
 
-        {/* Center - Input */}
         <div className="flex-1 min-w-0 border-r border-border overflow-hidden">
           <InputWorkbench
             company={store.company}
@@ -58,15 +103,17 @@ export default function Index() {
             setResume={store.setResume}
             loading={store.loading}
             onExecute={handleExecute}
+            userPrompts={store.userPrompts}
+            setUserPrompts={store.setUserPrompts}
           />
         </div>
 
-        {/* Right - Output */}
         <div className="flex-1 min-w-0 overflow-hidden">
           <OutputPanel
             activeTab={store.activeTab}
             setActiveTab={store.setActiveTab}
             loading={store.loading}
+            outputs={store.outputs}
           />
         </div>
       </div>
