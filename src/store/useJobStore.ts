@@ -64,6 +64,12 @@ export function useJobStore() {
     () => loadFromStorage(STORAGE_PROMPTS_KEY, DEFAULT_USER_PROMPTS)
   );
 
+  // Persist records to localStorage whenever they change
+  useEffect(() => { saveToStorage(STORAGE_RECORDS_KEY, records); }, [records]);
+
+  // Persist userPrompts to localStorage whenever they change
+  useEffect(() => { saveToStorage(STORAGE_PROMPTS_KEY, userPrompts); }, [userPrompts]);
+
   const selectedRecord = records.find((r) => r.id === selectedId) || null;
 
   const selectRecord = useCallback((id: string) => {
