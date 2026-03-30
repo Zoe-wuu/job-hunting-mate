@@ -27,15 +27,15 @@ export default function HistorySidebar({ records, selectedId, onSelect, onDelete
   const rejected = records.filter((r) => r.status === "rejected");
 
   return (
-    <aside className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
+    <aside className="flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b border-sidebar-border">
-        <h2 className="font-display text-sm font-semibold tracking-wide uppercase text-sidebar-foreground/60 mb-3">
+      <div className="p-4 border-b border-border">
+        <h2 className="font-display text-xs font-semibold tracking-wide uppercase text-muted-foreground mb-3">
           🗂️ 投递记录
         </h2>
         <button
           onClick={onNew}
-          className="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-primary hover:text-sidebar-primary-foreground transition-colors text-sm font-medium"
+          className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium"
         >
           <Plus size={16} />
           新建求职项目
@@ -46,7 +46,7 @@ export default function HistorySidebar({ records, selectedId, onSelect, onDelete
       <div className="flex-1 overflow-y-auto p-3 space-y-4">
         {/* Active */}
         <section>
-          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50 mb-2 px-1">
+          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60 mb-2 px-1">
             <Briefcase size={12} />
             推进中
           </h3>
@@ -62,13 +62,13 @@ export default function HistorySidebar({ records, selectedId, onSelect, onDelete
             ))}
           </AnimatePresence>
           {active.length === 0 && (
-            <p className="text-xs text-sidebar-foreground/30 px-2 py-3">暂无推进中的项目</p>
+            <p className="text-xs text-muted-foreground/40 px-2 py-3">暂无推进中的项目</p>
           )}
         </section>
 
         {/* Rejected */}
         <section>
-          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50 mb-2 px-1">
+          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60 mb-2 px-1">
             <HeartCrack size={12} />
             拒信 / 已放弃
           </h3>
@@ -84,7 +84,7 @@ export default function HistorySidebar({ records, selectedId, onSelect, onDelete
             ))}
           </AnimatePresence>
           {rejected.length === 0 && (
-            <p className="text-xs text-sidebar-foreground/30 px-2 py-3">太好了，还没有拒信！</p>
+            <p className="text-xs text-muted-foreground/40 px-2 py-3">太好了，还没有拒信！</p>
           )}
         </section>
       </div>
@@ -133,10 +133,10 @@ function RecordItem({
       initial={{ opacity: 0, y: 4 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className={`group flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer mb-1 transition-colors ${
+      className={`group flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer mb-1 transition-all ${
         selected
-          ? "bg-sidebar-primary text-sidebar-primary-foreground"
-          : "hover:bg-sidebar-accent"
+          ? "bg-secondary/15 text-foreground border border-secondary/30"
+          : "hover:bg-muted/50"
       }`}
       onClick={() => onSelect(record.id)}
     >
@@ -144,7 +144,7 @@ function RecordItem({
         <p className="text-sm font-medium truncate">
           {record.company} ({record.position})
         </p>
-        <p className={`text-xs ${selected ? "text-sidebar-primary-foreground/70" : "text-sidebar-foreground/40"}`}>
+        <p className={`text-xs ${selected ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
           {record.date}
         </p>
       </div>
@@ -153,11 +153,7 @@ function RecordItem({
           e.stopPropagation();
           onDelete();
         }}
-        className={`shrink-0 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity ${
-          selected
-            ? "hover:bg-sidebar-primary-foreground/20"
-            : "hover:bg-destructive/20 text-destructive"
-        }`}
+        className="shrink-0 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 text-destructive"
       >
         <Trash2 size={14} />
       </button>
