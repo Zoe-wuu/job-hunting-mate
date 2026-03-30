@@ -1,8 +1,26 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { JobRecord, OutputTab } from "@/types/job";
+
+const STORAGE_RECORDS_KEY = "jobfinder_records";
+const STORAGE_PROMPTS_KEY = "jobfinder_user_prompts";
 
 const EMPTY_OUTPUTS = { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" };
 const EMPTY_PROMPTS = { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" };
+
+function loadFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveToStorage(key: string, value: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch { /* quota exceeded – silently ignore */ }
+}
 
 function createRecord(company: string, jd: string, resume: string): JobRecord {
   const pos = company ? company.split("-").pop()?.trim() || "岗位" : "岗位";
@@ -26,8 +44,10 @@ const TAB_TO_KEY: Record<OutputTab, keyof JobRecord["outputs"]> = {
   cover: "coverLetter",
 };
 
+const DEFAULT_USER_PROMPTS: Record<OutputTab, string> = { jd: "", daily: "", resume: "", cover: "" };
+
 export function useJobStore() {
-  const [records, setRecords] = useState<JobRecord[]>([]);
+  const [records, setRecords] = useState<JobRecord[]>(() => loadFromStorage(STORAGE_RECORDS_KEY, []));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<OutputTab>("jd");
 
@@ -36,14 +56,13 @@ export function useJobStore() {
   const [resume, setResume] = useState("");
   const [loading, setLoading] = useState<OutputTab | "all" | null>(null);
 
-  // Live streaming content per tab
   const [outputs, setOutputs] = useState<Record<OutputTab, string>>({
     jd: "", daily: "", resume: "", cover: "",
   });
 
-  const [userPrompts, setUserPrompts] = useState<Record<OutputTab, string>>({
-    jd: "", daily: "", resume: "", cover: "",
-  });
+  const [userPrompts, setUserPrompts] = useState<Record<OutputTab, string>>(
+    () => loadFromStorage(STORAGE_PROMPTS_KEY, DEFAULT_USER_PROMPTS)
+  );
 
   const selectedRecord = records.find((r) => r.id === selectedId) || null;
 
