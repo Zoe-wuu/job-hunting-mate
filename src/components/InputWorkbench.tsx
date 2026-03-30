@@ -49,7 +49,7 @@ export default function InputWorkbench({
   return (
     <div className="flex flex-col h-full">
       <div className="px-6 pt-5 pb-3">
-        <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
+        <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
           📥 工作台
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5">输入 JD 和简历，让 AI 帮你拆解战略</p>
@@ -64,7 +64,7 @@ export default function InputWorkbench({
             value={company}
             onChange={(e) => setCompany(e.target.value)}
             placeholder="例: 微软 (Microsoft) - PM"
-            className="w-full px-3 py-2.5 rounded-lg bg-card border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-ring transition-all"
+            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
           />
         </div>
 
@@ -77,7 +77,7 @@ export default function InputWorkbench({
             onChange={(e) => setJd(e.target.value)}
             placeholder="直接粘贴岗位描述，中英夹杂/带格式都没问题..."
             rows={6}
-            className="w-full px-3 py-2.5 rounded-lg bg-card border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-ring transition-all resize-none"
+            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all resize-none"
           />
         </div>
 
@@ -90,7 +90,7 @@ export default function InputWorkbench({
             onChange={(e) => setResume(e.target.value)}
             placeholder="复制你的工作经历文字即可，碎片化描述也 OK..."
             rows={6}
-            className="w-full px-3 py-2.5 rounded-lg bg-card border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-ring transition-all resize-none"
+            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all resize-none"
           />
         </div>
 
@@ -104,11 +104,11 @@ export default function InputWorkbench({
                 <button
                   disabled={!canExecute || loading !== null}
                   onClick={() => onExecute(tab)}
-                  className={`w-full flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-sm font-medium transition-all ${
+                  className={`w-full flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-sm font-medium transition-all ${
                     canExecute && loading !== tab && loading !== "all"
-                      ? "bg-card border border-border hover:border-primary/30 hover:shadow-soft text-foreground"
+                      ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft"
                       : loading === tab || loading === "all"
-                      ? "bg-primary/10 border border-primary/30 text-primary animate-pulse"
+                      ? "bg-primary/15 border border-primary/30 text-primary animate-pulse"
                       : "bg-muted text-muted-foreground/40 cursor-not-allowed border border-transparent"
                   }`}
                 >
@@ -129,9 +129,9 @@ export default function InputWorkbench({
           <button
             disabled={!canExecute || loading !== null}
             onClick={() => onExecute("all")}
-            className={`w-full mt-3 flex items-center justify-center gap-2 px-4 py-3.5 rounded-lg text-sm font-bold transition-all ${
+            className={`w-full mt-3 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-sm font-bold transition-all ${
               canExecute && loading === null
-                ? "gradient-accent text-accent-foreground hover:opacity-90 shadow-medium animate-pulse-glow"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-medium animate-pulse-glow"
                 : "bg-muted text-muted-foreground/40 cursor-not-allowed"
             }`}
           >

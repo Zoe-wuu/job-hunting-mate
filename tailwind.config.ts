@@ -89,8 +89,8 @@ export default {
           to: { height: "0" },
         },
         "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 0 0 hsl(45 90% 55% / 0.4)" },
-          "50%": { boxShadow: "0 0 20px 4px hsl(45 90% 55% / 0.2)" },
+          "0%, 100%": { boxShadow: "0 0 0 0 hsl(7 72% 50% / 0.3)" },
+          "50%": { boxShadow: "0 0 20px 4px hsl(7 72% 50% / 0.15)" },
         },
         "slide-in": {
           from: { opacity: "0", transform: "translateY(8px)" },
@@ -105,5 +105,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;

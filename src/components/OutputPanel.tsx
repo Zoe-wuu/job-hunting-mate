@@ -41,20 +41,20 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
   return (
     <div className="flex flex-col h-full">
       <div className="px-5 pt-5 pb-2">
-        <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
+        <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
           📤 AI 战略输出
         </h2>
       </div>
 
-      <div className="px-5 flex gap-1 border-b border-border">
+      <div className="px-5 flex gap-1">
         {TABS.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-2.5 text-xs font-medium rounded-t-lg transition-colors relative ${
+            className={`px-3 py-2 text-xs font-medium rounded-xl transition-all ${
               activeTab === tab
-                ? "bg-card text-foreground border-t border-x border-border -mb-px"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-secondary/15 text-secondary-foreground border border-secondary/30"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
             }`}
           >
             {OUTPUT_TAB_ICONS[tab]} {OUTPUT_TAB_LABELS[tab]}
@@ -65,7 +65,7 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-card">
+      <div className="flex-1 overflow-y-auto mt-3">
         <AnimatePresence mode="wait">
           {isTabLoading && !hasContent ? (
             <motion.div
@@ -84,11 +84,11 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.15 }}
-              className="p-5"
+              className="px-5 pb-5"
             >
-              <div className="prose prose-sm max-w-none prose-headings:font-display prose-headings:text-foreground prose-p:text-foreground/80 prose-strong:text-foreground prose-li:text-foreground/80 prose-blockquote:border-l-accent prose-blockquote:text-muted-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:text-foreground">
+              <article className="prose prose-sm max-w-none leading-relaxed prose-headings:font-display prose-headings:text-foreground prose-headings:mt-6 prose-headings:mb-3 prose-p:text-foreground/80 prose-p:mb-4 prose-p:leading-relaxed prose-strong:text-foreground prose-li:text-foreground/80 prose-li:leading-relaxed prose-ul:my-3 prose-ul:space-y-1.5 prose-ol:my-3 prose-ol:space-y-1.5 prose-blockquote:border-l-secondary prose-blockquote:text-muted-foreground prose-blockquote:not-italic prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:text-foreground prose-hr:border-border prose-h1:text-lg prose-h2:text-base prose-h3:text-sm whitespace-pre-wrap">
                 <ReactMarkdown>{content}</ReactMarkdown>
-              </div>
+              </article>
               {isTabLoading && (
                 <span className="inline-block w-2 h-4 bg-primary/60 animate-pulse ml-0.5" />
               )}
@@ -108,25 +108,25 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
       </div>
 
       {hasContent && (
-        <div className="px-5 py-3 border-t border-border bg-card flex items-center justify-between">
+        <div className="px-5 py-3 border-t border-border flex items-center justify-between">
           <div className="flex gap-2">
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-muted text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-muted text-muted-foreground hover:text-foreground transition-colors"
             >
               <Copy size={13} />
               复制 Markdown
             </button>
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-muted text-muted-foreground hover:text-foreground transition-colors">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-muted text-muted-foreground hover:text-foreground transition-colors">
               <Download size={13} />
               导出 PDF
             </button>
           </div>
           <div className="flex gap-1">
-            <button className="p-2 rounded-md text-muted-foreground hover:text-success hover:bg-success/10 transition-colors">
+            <button className="p-2 rounded-xl text-muted-foreground hover:text-success hover:bg-success/10 transition-colors">
               <ThumbsUp size={15} />
             </button>
-            <button className="p-2 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
+            <button className="p-2 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors">
               <ThumbsDown size={15} />
             </button>
           </div>
