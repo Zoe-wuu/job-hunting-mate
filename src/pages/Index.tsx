@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+import { User } from "lucide-react"; 
 import HistorySidebar from "@/components/HistorySidebar";
 import InputWorkbench from "@/components/InputWorkbench";
 import OutputPanel from "@/components/OutputPanel";
