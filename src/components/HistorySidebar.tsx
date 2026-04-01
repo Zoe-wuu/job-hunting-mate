@@ -50,7 +50,7 @@ export default function HistorySidebar({ records, selectedId, onSelect, onDelete
         </h2>
         <button
           onClick={onNew}
-          className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium"
+          className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-foreground text-card hover:bg-foreground/85 transition-colors text-sm font-medium"
         >
           <Plus size={16} />
           新建求职项目
@@ -155,8 +155,8 @@ function RecordItem({
       exit={{ opacity: 0, x: -20 }}
       className={`group flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer mb-1 transition-all ${
         selected
-          ? "bg-muted/60 border-l-4 border-l-primary border border-transparent"
-          : "hover:bg-muted/30 border-l-4 border-l-transparent"
+          ? "bg-muted/40 border-l-4 border-l-primary border border-transparent"
+          : "hover:bg-muted/20 border-l-4 border-l-transparent"
       }`}
       onClick={() => onSelect(record.id)}
     >

@@ -15,11 +15,14 @@
     --popover: 0 0% 100%;
     --popover-foreground: 30 4% 16%;
 
-    --primary: 7 72% 50%;
+    --primary: 8 60% 44%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 164 30% 64%;
+    --secondary: 160 25% 42%;
     --secondary-foreground: 0 0% 100%;
+
+    --secondary-wash: 160 30% 94%;
+    --secondary-deep: 160 30% 40%;
 
     --muted: 37 20% 90%;
     --muted-foreground: 30 6% 44%;
@@ -32,7 +35,7 @@
 
     --border: 37 15% 87%;
     --input: 37 15% 87%;
-    --ring: 7 72% 50%;
+    --ring: 160 25% 42%;
 
     --radius: 0.75rem;
 

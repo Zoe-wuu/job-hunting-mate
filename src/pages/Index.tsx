@@ -84,7 +84,7 @@ export default function Index() {
 
       {/* Main 3-col Bento Layout */}
       <div className="flex flex-1 overflow-hidden gap-4 px-4 pb-4">
-        <div className="w-64 shrink-0 overflow-hidden rounded-3xl bg-card border border-border shadow-soft">
+        <div className="w-64 shrink-0 overflow-hidden rounded-3xl bg-card border border-border/60 shadow-sm">
           <HistorySidebar
             records={store.records}
             selectedId={store.selectedId}
@@ -95,7 +95,7 @@ export default function Index() {
           />
         </div>
 
-        <div className="flex-1 min-w-0 overflow-hidden rounded-3xl bg-card border border-border shadow-soft">
+        <div className="flex-1 min-w-0 overflow-hidden rounded-3xl bg-card border border-border/60 shadow-sm">
           <InputWorkbench
             company={store.company}
             setCompany={store.setCompany}
@@ -110,7 +110,7 @@ export default function Index() {
           />
         </div>
 
-        <div className="flex-1 min-w-0 overflow-hidden rounded-3xl bg-card border border-border shadow-soft">
+        <div className="flex-1 min-w-0 overflow-hidden rounded-3xl bg-card border border-border/60 shadow-sm">
           <OutputPanel
             activeTab={store.activeTab}
             setActiveTab={store.setActiveTab}
