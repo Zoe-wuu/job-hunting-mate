@@ -64,10 +64,7 @@ export function useJobStore() {
     () => loadFromStorage(STORAGE_PROMPTS_KEY, DEFAULT_USER_PROMPTS)
   );
 
-  // Persist records to localStorage whenever they change
   useEffect(() => { saveToStorage(STORAGE_RECORDS_KEY, records); }, [records]);
-
-  // Persist userPrompts to localStorage whenever they change
   useEffect(() => { saveToStorage(STORAGE_PROMPTS_KEY, userPrompts); }, [userPrompts]);
 
   const selectedRecord = records.find((r) => r.id === selectedId) || null;
@@ -102,6 +99,12 @@ export function useJobStore() {
     }
   }, [selectedId]);
 
+  const rejectRecord = useCallback((id: string) => {
+    setRecords((prev) =>
+      prev.map((r) => r.id === id ? { ...r, status: "rejected" as const } : r)
+    );
+  }, []);
+
   const clearInputs = useCallback(() => {
     setSelectedId(null);
     setCompany("");
@@ -110,7 +113,6 @@ export function useJobStore() {
     setOutputs({ jd: "", daily: "", resume: "", cover: "" });
   }, []);
 
-  // Ensure a record exists for current inputs, return its id
   const ensureRecord = useCallback((): string => {
     if (selectedId) return selectedId;
     const rec = createRecord(company, jd, resume);
@@ -127,7 +129,6 @@ export function useJobStore() {
     setOutputs((prev) => ({ ...prev, [tab]: "" }));
   }, []);
 
-  // Save current output to the record
   const saveOutputToRecord = useCallback((recordId: string, tab: OutputTab, content: string) => {
     setRecords((prev) =>
       prev.map((r) =>
@@ -157,6 +158,7 @@ export function useJobStore() {
     setUserPrompts,
     selectRecord,
     deleteRecord,
+    rejectRecord,
     clearInputs,
     ensureRecord,
     appendOutput,

@@ -1,11 +1,18 @@
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
-import { Copy, Download, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Copy, Download, ThumbsUp, ThumbsDown, FileText, Sun, PenLine, Mail, Sparkles } from "lucide-react";
 import type { OutputTab } from "@/types/job";
-import { OUTPUT_TAB_LABELS, OUTPUT_TAB_ICONS } from "@/types/job";
+import { OUTPUT_TAB_LABELS } from "@/types/job";
 import { toast } from "sonner";
 
 const TABS: OutputTab[] = ["jd", "daily", "resume", "cover"];
+
+const TAB_ICONS: Record<OutputTab, React.ReactNode> = {
+  jd: <FileText size={14} />,
+  daily: <Sun size={14} />,
+  resume: <PenLine size={14} />,
+  cover: <Mail size={14} />,
+};
 
 const LOADING_MESSAGES: Record<OutputTab, string> = {
   jd: "正在用大白话解码黑话中...",
@@ -42,7 +49,8 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
     <div className="flex flex-col h-full">
       <div className="px-5 pt-5 pb-2">
         <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
-          📤 AI 战略输出
+          <Sparkles size={18} className="text-secondary" />
+          AI 战略输出
         </h2>
       </div>
 
@@ -51,13 +59,14 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-2 text-xs font-medium rounded-xl transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl transition-all ${
               activeTab === tab
-                ? "bg-secondary/15 text-secondary-foreground border border-secondary/30"
+                ? "bg-secondary text-white"
                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
             }`}
           >
-            {OUTPUT_TAB_ICONS[tab]} {OUTPUT_TAB_LABELS[tab]}
+            {TAB_ICONS[tab]}
+            {OUTPUT_TAB_LABELS[tab]}
             {outputs[tab].length > 0 && activeTab !== tab && (
               <span className="ml-1 w-1.5 h-1.5 rounded-full bg-success inline-block" />
             )}
@@ -75,7 +84,7 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center h-full gap-3"
             >
-              <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-secondary/20 border-t-secondary rounded-full animate-spin" />
               <p className="text-sm text-muted-foreground">{LOADING_MESSAGES[activeTab]}</p>
             </motion.div>
           ) : hasContent ? (
@@ -86,11 +95,11 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
               transition={{ duration: 0.15 }}
               className="px-5 pb-5"
             >
-              <article className="prose prose-sm max-w-none leading-relaxed prose-headings:font-display prose-headings:text-foreground prose-headings:mt-6 prose-headings:mb-3 prose-p:text-foreground/80 prose-p:mb-4 prose-p:leading-relaxed prose-strong:text-foreground prose-li:text-foreground/80 prose-li:leading-relaxed prose-ul:my-3 prose-ul:space-y-1.5 prose-ol:my-3 prose-ol:space-y-1.5 prose-blockquote:border-l-secondary prose-blockquote:text-muted-foreground prose-blockquote:not-italic prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:text-foreground prose-hr:border-border prose-h1:text-lg prose-h2:text-base prose-h3:text-sm whitespace-pre-wrap">
+              <article className="prose prose-sm max-w-none prose-headings:font-display prose-headings:text-foreground prose-headings:mt-4 prose-headings:mb-2 prose-p:text-foreground/80 prose-p:mb-3 prose-p:leading-normal prose-strong:text-foreground prose-li:text-foreground/80 prose-li:leading-normal prose-ul:my-2 prose-ul:space-y-0.5 prose-ol:my-2 prose-ol:space-y-0.5 prose-blockquote:border-l-secondary prose-blockquote:text-muted-foreground prose-blockquote:not-italic prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-xs prose-code:text-foreground prose-hr:border-border prose-h1:text-lg prose-h2:text-base prose-h3:text-sm whitespace-pre-wrap leading-normal">
                 <ReactMarkdown>{content}</ReactMarkdown>
               </article>
               {isTabLoading && (
-                <span className="inline-block w-2 h-4 bg-primary/60 animate-pulse ml-0.5" />
+                <span className="inline-block w-2 h-4 bg-secondary/60 animate-pulse ml-0.5" />
               )}
             </motion.div>
           ) : (
@@ -100,7 +109,7 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
               animate={{ opacity: 1 }}
               className="flex flex-col items-center justify-center h-full gap-2 text-center px-8"
             >
-              <span className="text-3xl">{OUTPUT_TAB_ICONS[activeTab]}</span>
+              <span className="text-muted-foreground/30">{TAB_ICONS[activeTab]}</span>
               <p className="text-sm text-muted-foreground">{EMPTY_MESSAGES[activeTab]}</p>
             </motion.div>
           )}
