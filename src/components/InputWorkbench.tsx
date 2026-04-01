@@ -66,7 +66,7 @@ export default function InputWorkbench({
             value={company}
             onChange={(e) => setCompany(e.target.value)}
             placeholder="例: 微软 (Microsoft) - PM"
-            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary/40 transition-all"
+            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary-deep/20 focus:border-secondary-deep/40 transition-all"
           />
         </div>
 
@@ -80,7 +80,7 @@ export default function InputWorkbench({
             onChange={(e) => setJd(e.target.value)}
             placeholder="直接粘贴岗位描述，中英夹杂/带格式都没问题..."
             rows={6}
-            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary/40 transition-all resize-none"
+            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary-deep/20 focus:border-secondary-deep/40 transition-all resize-none"
           />
         </div>
 
@@ -94,7 +94,7 @@ export default function InputWorkbench({
             onChange={(e) => setResume(e.target.value)}
             placeholder="复制你的工作经历文字即可，碎片化描述也 OK..."
             rows={6}
-            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary/40 transition-all resize-none"
+            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary-deep/20 focus:border-secondary-deep/40 transition-all resize-none"
           />
         </div>
 
@@ -109,12 +109,12 @@ export default function InputWorkbench({
                 <button
                   disabled={!canExecute || loading !== null}
                   onClick={() => onExecute(tab)}
-                  className={`w-full flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-sm font-medium transition-all ${
-                    canExecute && loading !== tab && loading !== "all"
-                      ? "bg-secondary text-white hover:bg-secondary/90 shadow-soft"
-                      : loading === tab || loading === "all"
-                      ? "bg-secondary/15 border border-secondary/30 text-secondary-foreground animate-pulse"
-                      : "bg-muted text-muted-foreground/40 cursor-not-allowed border border-transparent"
+                  className={`w-full flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-sm font-medium transition-all border ${
+                    loading === tab || loading === "all"
+                      ? "bg-secondary-wash border-secondary text-secondary-deep animate-pulse"
+                      : canExecute
+                      ? "bg-card border-border text-foreground hover:bg-secondary-wash hover:border-secondary-deep hover:text-secondary-deep shadow-soft"
+                      : "bg-muted text-muted-foreground/40 cursor-not-allowed border-transparent"
                   }`}
                 >
                   {icon}
@@ -122,7 +122,7 @@ export default function InputWorkbench({
                 </button>
                 <button
                   onClick={() => setConfigTab(tab)}
-                  className="absolute -top-1.5 -right-1.5 p-1 rounded-full bg-card border border-border shadow-soft text-muted-foreground hover:text-foreground hover:border-secondary/30 transition-colors"
+                  className="absolute -top-1.5 -right-1.5 p-1 rounded-full bg-card border border-border shadow-soft text-muted-foreground hover:text-foreground hover:border-secondary-deep/30 transition-colors"
                   title="自定义 Prompt"
                 >
                   <Settings size={12} />

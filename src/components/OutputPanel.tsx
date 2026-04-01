@@ -61,7 +61,7 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
             onClick={() => setActiveTab(tab)}
             className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl transition-all ${
               activeTab === tab
-                ? "bg-secondary text-white"
+                ? "bg-secondary-wash text-secondary-deep"
                 : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
             }`}
           >

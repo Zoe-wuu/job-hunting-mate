@@ -110,7 +110,7 @@ export default function Index() {
           />
         </div>
 
-        <div className="flex-1 min-w-0 overflow-hidden rounded-3xl bg-card border border-border shadow-soft">
+        <div className="flex-1 min-w-0 overflow-hidden rounded-3xl bg-card border border-border/60 shadow-sm">
           <OutputPanel
             activeTab={store.activeTab}
             setActiveTab={store.setActiveTab}
