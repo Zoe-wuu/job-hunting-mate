@@ -1,4 +1,4 @@
-import { Settings, Sparkles, FileText, Sun, PenLine, Mail } from "lucide-react";
+import { Settings, Sparkles, FileText, Sun, PenLine, Mail, LayoutDashboard, Building2, FileSearch, ClipboardList } from "lucide-react";
 import type { OutputTab } from "@/types/job";
 import { useState } from "react";
 import PromptConfigModal from "./PromptConfigModal";
@@ -50,53 +50,58 @@ export default function InputWorkbench({
     <div className="flex flex-col h-full">
       <div className="px-6 pt-5 pb-3">
         <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
-          📥 工作台
+          <LayoutDashboard size={18} className="text-secondary" />
+          工作台
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5">输入 JD 和简历，让 AI 帮你拆解战略</p>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-4">
         <div>
-          <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
-            🏢 目标公司（选填）
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
+            <Building2 size={13} />
+            目标公司（选填）
           </label>
           <input
             value={company}
             onChange={(e) => setCompany(e.target.value)}
             placeholder="例: 微软 (Microsoft) - PM"
-            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
+            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary/40 transition-all"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
-            📄 目标岗位 JD <span className="text-destructive">*</span>
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
+            <FileSearch size={13} />
+            目标岗位 JD <span className="text-destructive">*</span>
           </label>
           <textarea
             value={jd}
             onChange={(e) => setJd(e.target.value)}
             placeholder="直接粘贴岗位描述，中英夹杂/带格式都没问题..."
             rows={6}
-            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all resize-none"
+            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary/40 transition-all resize-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
-            📝 你的简历 / 核心经历 <span className="text-destructive">*</span>
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
+            <ClipboardList size={13} />
+            你的简历 / 核心经历 <span className="text-destructive">*</span>
           </label>
           <textarea
             value={resume}
             onChange={(e) => setResume(e.target.value)}
             placeholder="复制你的工作经历文字即可，碎片化描述也 OK..."
             rows={6}
-            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all resize-none"
+            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary/40 transition-all resize-none"
           />
         </div>
 
         <div className="pt-2">
-          <h3 className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
-            ⚡ AI 引擎控制台
+          <h3 className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
+            <Sparkles size={13} />
+            AI 引擎控制台
           </h3>
           <div className="grid grid-cols-2 gap-2">
             {ACTIONS.map(({ tab, label, icon }) => (
@@ -106,9 +111,9 @@ export default function InputWorkbench({
                   onClick={() => onExecute(tab)}
                   className={`w-full flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-sm font-medium transition-all ${
                     canExecute && loading !== tab && loading !== "all"
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-soft"
+                      ? "bg-secondary text-white hover:bg-secondary/90 shadow-soft"
                       : loading === tab || loading === "all"
-                      ? "bg-primary/15 border border-primary/30 text-primary animate-pulse"
+                      ? "bg-secondary/15 border border-secondary/30 text-secondary-foreground animate-pulse"
                       : "bg-muted text-muted-foreground/40 cursor-not-allowed border border-transparent"
                   }`}
                 >
@@ -117,7 +122,7 @@ export default function InputWorkbench({
                 </button>
                 <button
                   onClick={() => setConfigTab(tab)}
-                  className="absolute -top-1.5 -right-1.5 p-1 rounded-full bg-card border border-border shadow-soft text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors"
+                  className="absolute -top-1.5 -right-1.5 p-1 rounded-full bg-card border border-border shadow-soft text-muted-foreground hover:text-foreground hover:border-secondary/30 transition-colors"
                   title="自定义 Prompt"
                 >
                   <Settings size={12} />
@@ -131,17 +136,17 @@ export default function InputWorkbench({
             onClick={() => onExecute("all")}
             className={`w-full mt-3 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-sm font-bold transition-all ${
               canExecute && loading === null
-                ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-medium animate-pulse-glow"
+                ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-medium"
                 : "bg-muted text-muted-foreground/40 cursor-not-allowed"
             }`}
           >
             <Sparkles size={18} />
-            🔥 一键跑通全流程
+            一键跑通全流程
           </button>
 
           {!canExecute && (
             <p className="text-xs text-muted-foreground/60 text-center mt-2">
-              请先喂给我 JD 和简历 ☝️
+              请先填写 JD 和简历
             </p>
           )}
         </div>

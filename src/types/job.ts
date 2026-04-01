@@ -30,10 +30,3 @@ export const OUTPUT_TAB_LABELS: Record<OutputTab, string> = {
   resume: "简历优化",
   cover: "灵魂求职信",
 };
-
-export const OUTPUT_TAB_ICONS: Record<OutputTab, string> = {
-  jd: "🔍",
-  daily: "☀️",
-  resume: "📝",
-  cover: "💌",
-};

@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+import { User, Rocket } from "lucide-react";
 import HistorySidebar from "@/components/HistorySidebar";
 import InputWorkbench from "@/components/InputWorkbench";
 import OutputPanel from "@/components/OutputPanel";
@@ -69,8 +69,9 @@ export default function Index() {
     <div className="flex flex-col h-screen overflow-hidden bg-background">
       {/* Top Bar */}
       <header className="flex items-center justify-between px-6 py-3 shrink-0">
-        <h1 className="font-display text-xl font-bold text-foreground tracking-tight">
-          🚀 找工找工 <span className="text-sm font-medium text-muted-foreground ml-1">JobFinder Pro</span>
+        <h1 className="font-display text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
+          <Rocket size={20} className="text-primary" />
+          找工找工 <span className="text-sm font-medium text-muted-foreground ml-1">JobFinder Pro</span>
         </h1>
         <p className="hidden md:block text-xs text-muted-foreground italic">
           去术语化 · 场景化 · 高转化率
@@ -89,6 +90,7 @@ export default function Index() {
             selectedId={store.selectedId}
             onSelect={store.selectRecord}
             onDelete={store.deleteRecord}
+            onReject={store.rejectRecord}
             onNew={store.clearInputs}
           />
         </div>
