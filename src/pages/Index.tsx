@@ -2,17 +2,24 @@ import { User, Rocket } from "lucide-react";
 import HistorySidebar from "@/components/HistorySidebar";
 import InputWorkbench from "@/components/InputWorkbench";
 import OutputPanel from "@/components/OutputPanel";
+import LoginModal from "@/components/LoginModal";
+import ProfileDropdown from "@/components/ProfileDropdown";
 import { useJobStore } from "@/store/useJobStore";
 import { streamJobAI } from "@/services/jobAI";
+import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { OutputTab } from "@/types/job";
 import { toast } from "sonner";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 
 const ALL_TABS: OutputTab[] = ["jd", "daily", "resume", "cover"];
 
 export default function Index() {
   const store = useJobStore();
   const runningRef = useRef(false);
+  const { user, signOut } = useAuth();
+  const { t } = useLanguage();
+  const [showLogin, setShowLogin] = useState(false);
 
   const runSingleTab = useCallback(async (tab: OutputTab, recordId: string) => {
     store.clearOutput(tab);
@@ -71,15 +78,23 @@ export default function Index() {
       <header className="flex items-center justify-between px-6 py-3 shrink-0">
         <h1 className="font-display text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
           <Rocket size={20} className="text-primary" />
-          找工找工 <span className="text-sm font-medium text-muted-foreground ml-1">JobFinder Pro</span>
+          {t("找工找工", "JobFinder Pro")}
+          <span className="text-sm font-medium text-muted-foreground ml-1">
+            {t("去术语化 · 场景化 · 高转化率", "De-jargon · Scenario · High Conversion")}
+          </span>
         </h1>
-        <p className="hidden md:block text-xs text-muted-foreground italic">
-          去术语化 · 场景化 · 高转化率
-        </p>
-        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card text-sm text-muted-foreground hover:text-foreground transition-colors shadow-soft border border-border">
-          <User size={15} />
-          个人中心
-        </button>
+
+        {user ? (
+          <ProfileDropdown user={user} onSignOut={signOut} />
+        ) : (
+          <button
+            onClick={() => setShowLogin(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card text-sm text-muted-foreground hover:text-foreground transition-colors shadow-soft border border-border"
+          >
+            <User size={15} />
+            {t("个人中心", "Profile")}
+          </button>
+        )}
       </header>
 
       {/* Main 3-col Bento Layout */}
@@ -119,6 +134,9 @@ export default function Index() {
           />
         </div>
       </div>
+
+      {/* Login Modal */}
+      <LoginModal open={showLogin} onClose={() => setShowLogin(false)} />
     </div>
   );
 }
