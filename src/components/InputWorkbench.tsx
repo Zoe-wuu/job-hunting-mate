@@ -53,7 +53,7 @@ export default function InputWorkbench({
       <div className="px-6 pt-5 pb-3">
         <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
           <LayoutDashboard size={18} className="text-secondary" />
-          工作台
+          Cockpit
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5">输入 JD 和简历，让 AI 帮你拆解战略</p>
       </div>
