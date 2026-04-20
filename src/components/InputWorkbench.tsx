@@ -59,13 +59,14 @@ export default function InputWorkbench({
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-4">
-        {/* Resume Card - Dark Theme */}
-        <div className="rounded-2xl bg-[#1a1a2e] p-4 shadow-lg">
+        {/* Resume Card - Glassy Teal Style */}
+        <div className="rounded-2xl bg-[#EAF4F2] border border-[#89BDB1]/30 p-4">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <span className="text-white font-bold text-sm">我的简历</span>
+              <FileText size={16} className="text-[#2C2A28]" />
+              <span className="text-[#2C2A28] font-bold text-sm">我的简历</span>
               {hasSavedResume && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-medium">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/80 text-[#4A8B7C] text-[10px] font-medium">
                   <CheckCircle2 size={10} />
                   已保存
                 </span>
@@ -74,7 +75,7 @@ export default function InputWorkbench({
             {hasSavedResume && (
               <button
                 onClick={() => setEditingResume(true)}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-white/30 text-white text-xs hover:bg-white/10 transition-colors"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[#2C2A28]/80 text-xs hover:bg-white/50 transition-colors"
               >
                 <Pencil size={12} />
                 修改简历
@@ -83,7 +84,7 @@ export default function InputWorkbench({
           </div>
           
           {hasSavedResume ? (
-            <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">
+            <p className="text-[#2C2A28]/70 text-xs leading-relaxed line-clamp-2">
               {resume.trim()}
             </p>
           ) : (
