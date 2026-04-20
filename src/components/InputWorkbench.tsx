@@ -1,4 +1,4 @@
-import { Settings, Sparkles, FileText, Sun, PenLine, Mail, LayoutDashboard, Building2, FileSearch, ClipboardList } from "lucide-react";
+import { Settings, Sparkles, FileText, Sun, PenLine, Mail, LayoutDashboard, Building2, FileSearch, ClipboardList, CheckCircle2, Pencil } from "lucide-react";
 import type { OutputTab } from "@/types/job";
 import { useState } from "react";
 import PromptConfigModal from "./PromptConfigModal";
@@ -43,8 +43,10 @@ export default function InputWorkbench({
   setUserPrompts,
 }: Props) {
   const [configTab, setConfigTab] = useState<OutputTab | null>(null);
+  const [editingResume, setEditingResume] = useState(false);
 
-  const canExecute = jd.trim().length > 0 && resume.trim().length > 0;
+  const hasSavedResume = resume.trim().length > 0 && !editingResume;
+  const canExecute = jd.trim().length > 0 && resume.trim().length > 0 && company.trim().length > 0;
 
   return (
     <div className="flex flex-col h-full">
@@ -60,12 +62,12 @@ export default function InputWorkbench({
         <div>
           <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
             <Building2 size={13} />
-            目标公司（选填）
+            目标公司 <span className="text-destructive">*</span>
           </label>
           <input
             value={company}
             onChange={(e) => setCompany(e.target.value)}
-            placeholder="例: 微软 (Microsoft) - PM"
+            placeholder="请输入公司名称"
             className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary-deep/20 focus:border-secondary-deep/40 transition-all"
           />
         </div>
@@ -85,17 +87,42 @@ export default function InputWorkbench({
         </div>
 
         <div>
-          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
-            <ClipboardList size={13} />
-            你的简历 / 核心经历 <span className="text-destructive">*</span>
-          </label>
-          <textarea
-            value={resume}
-            onChange={(e) => setResume(e.target.value)}
-            placeholder="复制你的工作经历文字即可，碎片化描述也 OK..."
-            rows={6}
-            className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary-deep/20 focus:border-secondary-deep/40 transition-all resize-none"
-          />
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <ClipboardList size={13} />
+              你的简历 / 核心经历 <span className="text-destructive">*</span>
+            </label>
+            {hasSavedResume && (
+              <button
+                onClick={() => setEditingResume(true)}
+                className="flex items-center gap-1 text-xs text-secondary-deep hover:text-foreground transition-colors"
+              >
+                <Pencil size={11} />
+                更新简历
+              </button>
+            )}
+          </div>
+          {hasSavedResume ? (
+            <div className="px-3 py-2.5 rounded-xl bg-secondary-wash/40 border border-secondary-deep/20 text-sm text-foreground/80 flex items-start gap-2">
+              <CheckCircle2 size={15} className="text-secondary-deep mt-0.5 shrink-0" />
+              <div className="min-w-0">
+                <p className="font-medium text-secondary-deep">简历已保存</p>
+                <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                  {resume.length} 字 · 新建项目时自动复用
+                </p>
+              </div>
+            </div>
+          ) : (
+            <textarea
+              value={resume}
+              onChange={(e) => setResume(e.target.value)}
+              onBlur={() => resume.trim() && setEditingResume(false)}
+              placeholder="复制你的工作经历文字即可，粘贴一次后自动保存到本地，下次新建项目无需重复粘贴..."
+              rows={6}
+              autoFocus={editingResume}
+              className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary-deep/20 focus:border-secondary-deep/40 transition-all resize-none"
+            />
+          )}
         </div>
 
         <div className="pt-2">
@@ -146,7 +173,7 @@ export default function InputWorkbench({
 
           {!canExecute && (
             <p className="text-xs text-muted-foreground/60 text-center mt-2">
-              请先填写 JD 和简历
+              请先填写公司、JD 和简历
             </p>
           )}
         </div>
