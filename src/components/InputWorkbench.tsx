@@ -100,47 +100,6 @@ export default function InputWorkbench({
         </div>
 
         <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              <ClipboardList size={13} />
-              我的简历 <span className="text-destructive">*</span>
-              {hasSavedResume && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success/10 text-success text-[10px] font-medium normal-case tracking-normal">
-                  <CheckCircle2 size={10} />
-                  已保存
-                </span>
-              )}
-            </label>
-            {hasSavedResume && (
-              <button
-                onClick={() => setEditingResume(true)}
-                className="flex items-center gap-1 text-xs text-secondary-deep hover:text-foreground transition-colors"
-              >
-                <Pencil size={11} />
-                修改简历
-              </button>
-            )}
-          </div>
-          {hasSavedResume ? (
-            <div className="px-3 py-2.5 rounded-xl bg-background border border-border">
-              <p className="text-xs text-muted-foreground/80 leading-relaxed line-clamp-2">
-                {resume.trim()}
-              </p>
-            </div>
-          ) : (
-            <textarea
-              value={resume}
-              onChange={(e) => setResume(e.target.value)}
-              onBlur={() => resume.trim() && setEditingResume(false)}
-              placeholder="复制你的工作经历文字即可，粘贴一次后自动保存到本地，下次新建项目无需重复粘贴..."
-              rows={6}
-              autoFocus={editingResume}
-              className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary-deep/20 focus:border-secondary-deep/40 transition-all resize-none"
-            />
-          )}
-        </div>
-
-        <div>
           <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
             <Building2 size={13} />
             目标公司 <span className="text-destructive">*</span>
