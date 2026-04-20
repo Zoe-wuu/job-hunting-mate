@@ -53,49 +53,48 @@ export default function InputWorkbench({
       <div className="px-6 pt-5 pb-3">
         <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
           <LayoutDashboard size={18} className="text-secondary" />
-          工作台
+          Cockpit
         </h2>
         <p className="text-xs text-muted-foreground mt-0.5">输入 JD 和简历，让 AI 帮你拆解战略</p>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-4">
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              <ClipboardList size={13} />
-              我的简历 <span className="text-destructive">*</span>
+        {/* Resume Card - Dark Theme */}
+        <div className="rounded-2xl bg-[#1a1a2e] p-4 shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-white font-bold text-sm">我的简历</span>
               {hasSavedResume && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-success/10 text-success text-[10px] font-medium normal-case tracking-normal">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-medium">
                   <CheckCircle2 size={10} />
                   已保存
                 </span>
               )}
-            </label>
+            </div>
             {hasSavedResume && (
               <button
                 onClick={() => setEditingResume(true)}
-                className="flex items-center gap-1 text-xs text-secondary-deep hover:text-foreground transition-colors"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-white/30 text-white text-xs hover:bg-white/10 transition-colors"
               >
-                <Pencil size={11} />
+                <Pencil size={12} />
                 修改简历
               </button>
             )}
           </div>
+          
           {hasSavedResume ? (
-            <div className="px-3 py-2.5 rounded-xl bg-background border border-border">
-              <p className="text-xs text-muted-foreground/80 leading-relaxed line-clamp-2">
-                {resume.trim()}
-              </p>
-            </div>
+            <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">
+              {resume.trim()}
+            </p>
           ) : (
             <textarea
               value={resume}
               onChange={(e) => setResume(e.target.value)}
               onBlur={() => resume.trim() && setEditingResume(false)}
               placeholder="复制你的工作经历文字即可，粘贴一次后自动保存到本地，下次新建项目无需重复粘贴..."
-              rows={6}
+              rows={4}
               autoFocus={editingResume}
-              className="w-full px-3 py-2.5 rounded-xl bg-background border border-input text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-secondary-deep/20 focus:border-secondary-deep/40 transition-all resize-none"
+              className="w-full px-3 py-2.5 rounded-xl bg-white/10 border border-white/20 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4A8B7C] focus:border-[#4A8B7C] transition-all resize-none"
             />
           )}
         </div>

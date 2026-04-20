@@ -76,10 +76,10 @@ export default function Index() {
     <div className="flex flex-col h-screen overflow-hidden bg-background">
       {/* Top Bar */}
       <header className="flex items-center justify-between px-6 py-3 shrink-0">
-        <h1 className="font-display text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
+        <h1 className="font-display text-xl font-extrabold text-foreground tracking-wider flex items-center gap-2">
           <Rocket size={20} className="text-primary" />
           HIRED
-          <span className="text-sm font-medium text-muted-foreground ml-1">
+          <span className="text-sm font-medium text-muted-foreground ml-1 tracking-wide">
             Congratulations!
           </span>
         </h1>
