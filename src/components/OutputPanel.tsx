@@ -4,6 +4,7 @@ import { Copy, Download, ThumbsUp, ThumbsDown, FileText, Sun, PenLine, Mail, Spa
 import type { OutputTab } from "@/types/job";
 import { OUTPUT_TAB_LABELS } from "@/types/job";
 import { toast } from "sonner";
+import { useEffect, useRef } from "react";
 
 const TABS: OutputTab[] = ["jd", "daily", "resume", "cover"];
 
@@ -39,6 +40,11 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
   const isTabLoading = loading === activeTab || loading === "all";
   const content = outputs[activeTab];
   const hasContent = content.length > 0;
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [activeTab]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
@@ -74,7 +80,7 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto mt-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto mt-3">
         <AnimatePresence mode="wait">
           {isTabLoading && !hasContent ? (
             <motion.div

@@ -14,7 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      user_profiles: {
+        Row: {
+          resume_filename: string | null
+          resume_text: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          resume_filename?: string | null
+          resume_text?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          resume_filename?: string | null
+          resume_text?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
