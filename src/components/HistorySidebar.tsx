@@ -162,7 +162,7 @@ function RecordItem({
     >
       <div className="min-w-0">
         <p className="text-sm font-medium truncate">
-          {record.company} ({record.position})
+          {record.company}
         </p>
         <p className={`text-xs ${selected ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
           {record.date}
