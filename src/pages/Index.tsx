@@ -78,9 +78,9 @@ export default function Index() {
       <header className="flex items-center justify-between px-6 py-3 shrink-0">
         <h1 className="font-display text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
           <Rocket size={20} className="text-primary" />
-          {t("找工找工", "JobFinder Pro")}
+          HIRED
           <span className="text-sm font-medium text-muted-foreground ml-1">
-            {t("去术语化 · 场景化 · 高转化率", "De-jargon · Scenario · High Conversion")}
+            Congratulations!
           </span>
         </h1>
 
