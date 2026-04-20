@@ -3,6 +3,7 @@ import type { JobRecord, OutputTab } from "@/types/job";
 
 const STORAGE_RECORDS_KEY = "jobfinder_records";
 const STORAGE_PROMPTS_KEY = "jobfinder_user_prompts";
+const STORAGE_RESUME_KEY = "jobfinder_resume";
 
 const EMPTY_OUTPUTS = { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" };
 const EMPTY_PROMPTS = { jdTranslation: "", dailyLife: "", resumeOptimized: "", coverLetter: "" };
@@ -23,11 +24,10 @@ function saveToStorage(key: string, value: unknown) {
 }
 
 function createRecord(company: string, jd: string, resume: string): JobRecord {
-  const pos = company ? company.split("-").pop()?.trim() || "岗位" : "岗位";
   return {
     id: crypto.randomUUID(),
     company: company || "未命名公司",
-    position: pos,
+    position: "",
     date: new Date().toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\//g, "/"),
     status: "active",
     jd,
@@ -53,8 +53,13 @@ export function useJobStore() {
 
   const [company, setCompany] = useState("");
   const [jd, setJd] = useState("");
-  const [resume, setResume] = useState("");
+  const [resume, setResumeState] = useState<string>(() => loadFromStorage(STORAGE_RESUME_KEY, ""));
   const [loading, setLoading] = useState<OutputTab | "all" | null>(null);
+
+  const setResume = useCallback((v: string) => {
+    setResumeState(v);
+    saveToStorage(STORAGE_RESUME_KEY, v);
+  }, []);
 
   const [outputs, setOutputs] = useState<Record<OutputTab, string>>({
     jd: "", daily: "", resume: "", cover: "",
@@ -76,7 +81,7 @@ export function useJobStore() {
       if (rec) {
         setCompany(rec.company);
         setJd(rec.jd);
-        setResume(rec.resume);
+        if (rec.resume) setResumeState(rec.resume);
         setOutputs({
           jd: rec.outputs.jdTranslation,
           daily: rec.outputs.dailyLife,
@@ -94,7 +99,6 @@ export function useJobStore() {
       setSelectedId(null);
       setCompany("");
       setJd("");
-      setResume("");
       setOutputs({ jd: "", daily: "", resume: "", cover: "" });
     }
   }, [selectedId]);
@@ -109,7 +113,6 @@ export function useJobStore() {
     setSelectedId(null);
     setCompany("");
     setJd("");
-    setResume("");
     setOutputs({ jd: "", daily: "", resume: "", cover: "" });
   }, []);
 
