@@ -1,4 +1,4 @@
-import { Settings, Sparkles, FileText, Sun, PenLine, Mail, LayoutDashboard, Building2, FileSearch, ClipboardList, CheckCircle2, Pencil } from "lucide-react";
+import { Settings, Sparkles, FileText, Sun, PenLine, Mail, LayoutDashboard, Building2, FileSearch, CheckCircle2, Pencil } from "lucide-react";
 import type { OutputTab } from "@/types/job";
 import { useState } from "react";
 import PromptConfigModal from "./PromptConfigModal";
@@ -114,7 +114,7 @@ export default function InputWorkbench({
         </div>
 
         <div>
-          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-中间件-foreground mb-1.5 uppercase tracking-wider">
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground mb-1.5 uppercase tracking-wider">
             <FileSearch size={13} />
             目标岗位 JD <span className="text-destructive">*</span>
           </label>
