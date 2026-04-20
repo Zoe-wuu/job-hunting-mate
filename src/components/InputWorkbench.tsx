@@ -59,6 +59,46 @@ export default function InputWorkbench({
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 pb-4 space-y-4">
+        {/* Resume Card - Dark Theme */}
+        <div className="rounded-2xl bg-[#1a1a2e] p-4 shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-white font-bold text-sm">我的简历</span>
+              {hasSavedResume && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-medium">
+                  <CheckCircle2 size={10} />
+                  已保存
+                </span>
+              )}
+            </div>
+            {hasSavedResume && (
+              <button
+                onClick={() => setEditingResume(true)}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-white/30 text-white text-xs hover:bg-white/10 transition-colors"
+              >
+                <Pencil size={12} />
+                修改简历
+              </button>
+            )}
+          </div>
+          
+          {hasSavedResume ? (
+            <p className="text-gray-400 text-xs leading-relaxed line-clamp-2">
+              {resume.trim()}
+            </p>
+          ) : (
+            <textarea
+              value={resume}
+              onChange={(e) => setResume(e.target.value)}
+              onBlur={() => resume.trim() && setEditingResume(false)}
+              placeholder="复制你的工作经历文字即可，粘贴一次后自动保存到本地，下次新建项目无需重复粘贴..."
+              rows={4}
+              autoFocus={editingResume}
+              className="w-full px-3 py-2.5 rounded-xl bg-white/10 border border-white/20 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4A8B7C] focus:border-[#4A8B7C] transition-all resize-none"
+            />
+          )}
+        </div>
+
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
