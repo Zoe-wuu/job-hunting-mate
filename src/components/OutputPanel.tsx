@@ -56,7 +56,7 @@ export default function OutputPanel({ activeTab, setActiveTab, loading, outputs 
       <div className="px-5 pt-5 pb-2">
         <h2 className="font-display text-base font-bold text-foreground flex items-center gap-2">
           <Sparkles size={18} className="text-secondary" />
-          AI 战略输出
+          Output
         </h2>
       </div>
 
