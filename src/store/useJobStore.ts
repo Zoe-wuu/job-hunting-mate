@@ -168,6 +168,7 @@ export function useJobStore() {
     selectRecord,
     deleteRecord,
     rejectRecord,
+    setRecordStatus,
     clearInputs,
     ensureRecord,
     appendOutput,
