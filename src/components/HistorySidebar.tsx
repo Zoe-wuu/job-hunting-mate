@@ -74,10 +74,6 @@ export default function HistorySidebar({ records, selectedId, onSelect, onDelete
     setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const setAll = (value: boolean) => {
-    setCollapsed({ active: value, interviewing: value, rejected: value });
-  };
-
   return (
     <aside className="flex flex-col h-full">
       {/* Header */}
