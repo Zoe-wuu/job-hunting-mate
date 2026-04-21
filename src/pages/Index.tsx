@@ -106,6 +106,7 @@ export default function Index() {
             onSelect={store.selectRecord}
             onDelete={store.deleteRecord}
             onReject={store.rejectRecord}
+            setRecordStatus={store.setRecordStatus}
             onNew={store.clearInputs}
           />
         </div>
