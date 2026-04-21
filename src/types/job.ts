@@ -1,4 +1,4 @@
-export type JobStatus = "active" | "rejected";
+export type JobStatus = "active" | "interviewing" | "rejected";
 
 export interface JobRecord {
   id: string;
