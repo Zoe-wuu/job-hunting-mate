@@ -109,6 +109,12 @@ export function useJobStore() {
     );
   }, []);
 
+  const setRecordStatus = useCallback((id: string, status: JobRecord["status"]) => {
+    setRecords((prev) =>
+      prev.map((r) => r.id === id ? { ...r, status } : r)
+    );
+  }, []);
+
   const clearInputs = useCallback(() => {
     setSelectedId(null);
     setCompany("");
@@ -162,6 +168,7 @@ export function useJobStore() {
     selectRecord,
     deleteRecord,
     rejectRecord,
+    setRecordStatus,
     clearInputs,
     ensureRecord,
     appendOutput,

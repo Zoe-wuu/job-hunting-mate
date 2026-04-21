@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Trash2, Plus, Briefcase, HeartCrack, XCircle } from "lucide-react";
-import type { JobRecord } from "@/types/job";
-import { useState } from "react";
+import { Plus, Briefcase, HeartCrack, Users, MoreHorizontal, ChevronDown, ChevronRight, ArrowRightLeft, Trash2 } from "lucide-react";
+import type { JobRecord, JobStatus } from "@/types/job";
+import { useState, useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,6 +12,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Props {
   records: JobRecord[];
@@ -19,25 +26,56 @@ interface Props {
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onReject: (id: string) => void;
+  setRecordStatus: (id: string, status: JobStatus) => void;
   onNew: () => void;
 }
 
-export default function HistorySidebar({ records, selectedId, onSelect, onDelete, onReject, onNew }: Props) {
+const COLLAPSE_KEY = "jobfinder_section_collapsed";
+
+type SectionKey = JobStatus;
+
+const SECTIONS: { key: SectionKey; label: string; icon: typeof Briefcase; emptyText: string }[] = [
+  { key: "active", label: "推进中", icon: Briefcase, emptyText: "暂无推进中的项目" },
+  { key: "interviewing", label: "面试中", icon: Users, emptyText: "暂无面试中的项目" },
+  { key: "rejected", label: "拒信 / 已放弃", icon: HeartCrack, emptyText: "太好了，还没有拒信！" },
+];
+
+function loadCollapsed(): Record<SectionKey, boolean> {
+  try {
+    const raw = localStorage.getItem(COLLAPSE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch { /* ignore */ }
+  return { active: false, interviewing: false, rejected: false };
+}
+
+export default function HistorySidebar({ records, selectedId, onSelect, onDelete, onReject, setRecordStatus, onNew }: Props) {
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-  const active = records.filter((r) => r.status === "active");
-  const rejected = records.filter((r) => r.status === "rejected");
+  const [collapsed, setCollapsed] = useState<Record<SectionKey, boolean>>(() => loadCollapsed());
+
+  useEffect(() => {
+    try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify(collapsed)); } catch { /* ignore */ }
+  }, [collapsed]);
+
+  const grouped: Record<SectionKey, JobRecord[]> = {
+    active: records.filter((r) => r.status === "active"),
+    interviewing: records.filter((r) => r.status === "interviewing"),
+    rejected: records.filter((r) => r.status === "rejected"),
+  };
 
   const targetRecord = deleteTarget ? records.find((r) => r.id === deleteTarget) : null;
-  const isRejectedDelete = targetRecord?.status === "rejected";
 
-  const handleAction = () => {
+  const handleDeleteConfirm = () => {
     if (!deleteTarget) return;
-    if (isRejectedDelete) {
-      onDelete(deleteTarget);
-    } else {
-      onReject(deleteTarget);
-    }
+    onDelete(deleteTarget);
     setDeleteTarget(null);
+  };
+
+  const toggleSection = (key: SectionKey) => {
+    setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const setAll = (value: boolean) => {
+    setCollapsed({ active: value, interviewing: value, rejected: value });
   };
 
   return (
@@ -50,82 +88,91 @@ export default function HistorySidebar({ records, selectedId, onSelect, onDelete
         </h2>
         <button
           onClick={onNew}
-          className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-foreground text-card hover:bg-foreground/85 transition-colors text-sm font-medium"
+          className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-foreground text-card hover:bg-foreground/85 transition-colors text-sm font-medium mb-2"
         >
           <Plus size={16} />
           新建求职项目
         </button>
+        <div className="flex gap-1.5">
+          <button
+            onClick={() => setAll(false)}
+            className="flex-1 text-xs px-2 py-1 rounded-md border border-border hover:bg-muted/40 transition-colors text-muted-foreground"
+          >
+            全部展开
+          </button>
+          <button
+            onClick={() => setAll(true)}
+            className="flex-1 text-xs px-2 py-1 rounded-md border border-border hover:bg-muted/40 transition-colors text-muted-foreground"
+          >
+            全部折叠
+          </button>
+        </div>
       </div>
 
       {/* Lists */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-4">
-        {/* Active */}
-        <section>
-          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60 mb-2 px-1">
-            <Briefcase size={12} />
-            推进中
-          </h3>
-          <AnimatePresence>
-            {active.map((r) => (
-              <RecordItem
-                key={r.id}
-                record={r}
-                selected={selectedId === r.id}
-                onSelect={onSelect}
-                onAction={() => setDeleteTarget(r.id)}
-                actionIcon={<XCircle size={14} />}
-              />
-            ))}
-          </AnimatePresence>
-          {active.length === 0 && (
-            <p className="text-xs text-muted-foreground/40 px-2 py-3">暂无推进中的项目</p>
-          )}
-        </section>
+      <div className="flex-1 overflow-y-auto p-3 space-y-3">
+        {SECTIONS.map(({ key, label, icon: Icon, emptyText }) => {
+          const items = grouped[key];
+          const isCollapsed = collapsed[key];
+          return (
+            <section key={key}>
+              <button
+                onClick={() => toggleSection(key)}
+                className="w-full flex items-center justify-between px-1 mb-2 group"
+              >
+                <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+                  {isCollapsed ? <ChevronRight size={12} /> : <ChevronDown size={12} />}
+                  <Icon size={12} />
+                  {label}
+                  <span className="ml-1 text-muted-foreground/50 normal-case tracking-normal">
+                    ({items.length})
+                  </span>
+                </h3>
+              </button>
 
-        {/* Rejected */}
-        <section>
-          <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60 mb-2 px-1">
-            <HeartCrack size={12} />
-            拒信 / 已放弃
-          </h3>
-          <AnimatePresence>
-            {rejected.map((r) => (
-              <RecordItem
-                key={r.id}
-                record={r}
-                selected={selectedId === r.id}
-                onSelect={onSelect}
-                onAction={() => setDeleteTarget(r.id)}
-                actionIcon={<Trash2 size={14} />}
-              />
-            ))}
-          </AnimatePresence>
-          {rejected.length === 0 && (
-            <p className="text-xs text-muted-foreground/40 px-2 py-3">太好了，还没有拒信！</p>
-          )}
-        </section>
+              {!isCollapsed && (
+                <>
+                  <AnimatePresence>
+                    {items.map((r) => (
+                      <RecordItem
+                        key={r.id}
+                        record={r}
+                        selected={selectedId === r.id}
+                        onSelect={onSelect}
+                        onMove={(status) => {
+                          if (status === "rejected") onReject(r.id);
+                          else setRecordStatus(r.id, status);
+                        }}
+                        onDelete={() => setDeleteTarget(r.id)}
+                      />
+                    ))}
+                  </AnimatePresence>
+                  {items.length === 0 && (
+                    <p className="text-xs text-muted-foreground/40 px-2 py-2">{emptyText}</p>
+                  )}
+                </>
+              )}
+            </section>
+          );
+        })}
       </div>
 
       {/* Confirmation dialog */}
       <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              {isRejectedDelete ? "确认彻底删除？" : "移入拒信？"}
-            </AlertDialogTitle>
+            <AlertDialogTitle>确认彻底删除？</AlertDialogTitle>
             <AlertDialogDescription>
-              {isRejectedDelete
-                ? "删除后所有相关数据将被彻底清除，无法恢复。"
-                : "该项目将被移入「拒信/已放弃」区域，你仍可在那里查看或彻底删除。"}
+              将彻底删除「{targetRecord?.company}」及其所有相关数据，无法恢复。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>再想想</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleAction}
+              onClick={handleDeleteConfirm}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isRejectedDelete ? "彻底删除" : "移入拒信"}
+              彻底删除
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -138,15 +185,22 @@ function RecordItem({
   record,
   selected,
   onSelect,
-  onAction,
-  actionIcon,
+  onMove,
+  onDelete,
 }: {
   record: JobRecord;
   selected: boolean;
   onSelect: (id: string) => void;
-  onAction: () => void;
-  actionIcon: React.ReactNode;
+  onMove: (status: JobStatus) => void;
+  onDelete: () => void;
 }) {
+  const allMoves: { status: JobStatus; label: string }[] = [
+    { status: "active", label: "移回「推进中」" },
+    { status: "interviewing", label: "移至「面试中」" },
+    { status: "rejected", label: "移至「拒信/已放弃」" },
+  ];
+  const moveOptions = allMoves.filter((o) => o.status !== record.status);
+
   return (
     <motion.div
       layout
@@ -160,23 +214,47 @@ function RecordItem({
       }`}
       onClick={() => onSelect(record.id)}
     >
-      <div className="min-w-0">
-        <p className="text-sm font-medium truncate">
-          {record.company}
-        </p>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium truncate">{record.company}</p>
         <p className={`text-xs ${selected ? "text-muted-foreground" : "text-muted-foreground/50"}`}>
           {record.date}
         </p>
       </div>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onAction();
-        }}
-        className="shrink-0 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive/10 text-destructive"
-      >
-        {actionIcon}
-      </button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            onClick={(e) => e.stopPropagation()}
+            className="shrink-0 p-1 rounded opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100 transition-opacity hover:bg-muted/50 text-muted-foreground"
+          >
+            <MoreHorizontal size={16} />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+          {moveOptions.map((o) => (
+            <DropdownMenuItem
+              key={o.status}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMove(o.status);
+              }}
+            >
+              <ArrowRightLeft size={14} className="mr-2" />
+              {o.label}
+            </DropdownMenuItem>
+          ))}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
+            className="text-destructive focus:text-destructive"
+          >
+            <Trash2 size={14} className="mr-2" />
+            删除项目
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </motion.div>
   );
 }
