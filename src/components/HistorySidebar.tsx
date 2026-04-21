@@ -88,25 +88,11 @@ export default function HistorySidebar({ records, selectedId, onSelect, onDelete
         </h2>
         <button
           onClick={onNew}
-          className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-foreground text-card hover:bg-foreground/85 transition-colors text-sm font-medium mb-2"
+          className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl bg-foreground text-card hover:bg-foreground/85 transition-colors text-sm font-medium"
         >
           <Plus size={16} />
           新建求职项目
         </button>
-        <div className="flex gap-1.5">
-          <button
-            onClick={() => setAll(false)}
-            className="flex-1 text-xs px-2 py-1 rounded-md border border-border hover:bg-muted/40 transition-colors text-muted-foreground"
-          >
-            全部展开
-          </button>
-          <button
-            onClick={() => setAll(true)}
-            className="flex-1 text-xs px-2 py-1 rounded-md border border-border hover:bg-muted/40 transition-colors text-muted-foreground"
-          >
-            全部折叠
-          </button>
-        </div>
       </div>
 
       {/* Lists */}
