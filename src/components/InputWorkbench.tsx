@@ -95,7 +95,7 @@ export default function InputWorkbench({
               placeholder="复制你的工作经历文字即可，粘贴一次后自动保存到本地，下次新建项目无需重复粘贴..."
               rows={4}
               autoFocus={editingResume}
-              className="w-full px-3 py-2.5 rounded-xl bg-white/10 border border-white/20 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4A8B7C] focus:border-[#4A8B7C] transition-all resize-none"
+              className="w-full px-3 py-2.5 rounded-xl bg-white/10 border border-white/20 text-sm text-[#1f2937] placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#4A8B7C] focus:border-[#4A8B7C] transition-all resize-none"
             />
           )}
         </div>
