@@ -163,14 +163,13 @@ export default function InputWorkbench({
           <button
             disabled={!canExecute || loading !== null}
             onClick={() => onExecute("all")}
-            className={`w-full mt-3 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-sm font-bold transition-all ${
+            className={`w-full mt-3 flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-sm font-bold transition-all tracking-[0.1em] ${
               canExecute && loading === null
                 ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-medium"
                 : "bg-muted text-muted-foreground/40 cursor-not-allowed"
             }`}
           >
-            <Sparkles size={18} />
-            一键跑通全流程
+            RUN ALL
           </button>
 
           {!canExecute && (
