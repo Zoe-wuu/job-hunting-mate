@@ -194,11 +194,12 @@ function RecordItem({
   onMove: (status: JobStatus) => void;
   onDelete: () => void;
 }) {
-  const moveOptions: { status: JobStatus; label: string }[] = [
+  const allMoves: { status: JobStatus; label: string }[] = [
     { status: "active", label: "移回「推进中」" },
     { status: "interviewing", label: "移至「面试中」" },
     { status: "rejected", label: "移至「拒信/已放弃」" },
-  ].filter((o) => o.status !== record.status);
+  ];
+  const moveOptions = allMoves.filter((o) => o.status !== record.status);
 
   return (
     <motion.div
