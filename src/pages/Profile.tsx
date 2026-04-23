@@ -68,16 +68,17 @@ export default function Profile() {
       const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
       const url = pub.publicUrl;
 
-      const { error: updErr } = await supabase
+      const { data: updated, error: updErr } = await supabase
         .from("profiles")
-        .update({ avatar_url: url })
-        .eq("id", user.id);
+        .upsert({ id: user.id, avatar_url: url }, { onConflict: "id" })
+        .select("avatar_url")
+        .single();
       if (updErr) throw updErr;
 
-      setAvatarUrl(url);
+      setAvatarUrl(updated?.avatar_url ?? url);
       toast.success(t("头像已更新", "Avatar updated"));
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(err.message ?? t("上传失败", "Upload failed"));
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -91,13 +92,21 @@ export default function Profile() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
-      .update({ username: username.trim() })
-      .eq("id", user.id);
+      .upsert(
+        { id: user.id, username: username.trim() },
+        { onConflict: "id" }
+      )
+      .select("username")
+      .single();
     setSaving(false);
-    if (error) toast.error(error.message);
-    else toast.success(t("资料已保存", "Profile saved"));
+    if (error) {
+      toast.error(`${t("保存失败", "Save failed")}: ${error.message}`);
+    } else {
+      if (data?.username) setUsername(data.username);
+      toast.success(t("已保存", "Saved"));
+    }
   };
 
   const handleSignOut = async () => {
