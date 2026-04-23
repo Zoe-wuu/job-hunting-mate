@@ -92,13 +92,21 @@ export default function Profile() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
-      .update({ username: username.trim() })
-      .eq("id", user.id);
+      .upsert(
+        { id: user.id, username: username.trim() },
+        { onConflict: "id" }
+      )
+      .select("username")
+      .single();
     setSaving(false);
-    if (error) toast.error(error.message);
-    else toast.success(t("资料已保存", "Profile saved"));
+    if (error) {
+      toast.error(`${t("保存失败", "Save failed")}: ${error.message}`);
+    } else {
+      if (data?.username) setUsername(data.username);
+      toast.success(t("已保存", "Saved"));
+    }
   };
 
   const handleSignOut = async () => {
