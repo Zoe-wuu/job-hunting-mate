@@ -1,8 +1,8 @@
 import { User, Rocket } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import HistorySidebar from "@/components/HistorySidebar";
 import InputWorkbench from "@/components/InputWorkbench";
 import OutputPanel from "@/components/OutputPanel";
-import LoginModal from "@/components/LoginModal";
 import ProfileDropdown from "@/components/ProfileDropdown";
 import { useJobStore } from "@/store/useJobStore";
 import { streamJobAI } from "@/services/jobAI";
@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { OutputTab } from "@/types/job";
 import { toast } from "sonner";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 
 const ALL_TABS: OutputTab[] = ["jd", "daily", "resume", "cover"];
 
@@ -19,7 +19,7 @@ export default function Index() {
   const runningRef = useRef(false);
   const { user, signOut } = useAuth();
   const { t } = useLanguage();
-  const [showLogin, setShowLogin] = useState(false);
+  const navigate = useNavigate();
 
   const runSingleTab = useCallback(async (tab: OutputTab, recordId: string) => {
     store.clearOutput(tab);
@@ -88,11 +88,11 @@ export default function Index() {
           <ProfileDropdown user={user} onSignOut={signOut} />
         ) : (
           <button
-            onClick={() => setShowLogin(true)}
+            onClick={() => navigate("/auth")}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card text-sm text-muted-foreground hover:text-foreground transition-colors shadow-soft border border-border"
           >
             <User size={15} />
-            {t("个人中心", "Profile")}
+            {t("登录 / 注册", "Sign In / Up")}
           </button>
         )}
       </header>
@@ -136,8 +136,6 @@ export default function Index() {
         </div>
       </div>
 
-      {/* Login Modal */}
-      <LoginModal open={showLogin} onClose={() => setShowLogin(false)} />
     </div>
   );
 }

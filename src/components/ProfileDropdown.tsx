@@ -1,8 +1,11 @@
-import { User, Globe, LogOut } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { User, Globe, LogOut, Settings } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import type { User as SupaUser } from "@supabase/supabase-js";
 
 interface Props {
@@ -12,8 +15,30 @@ interface Props {
 
 export default function ProfileDropdown({ user, onSignOut }: Props) {
   const { language, setLanguage, t } = useLanguage();
+  const [username, setUsername] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("username, avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (!active) return;
+      if (data) {
+        setUsername(data.username);
+        setAvatarUrl(data.avatar_url);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [user.id]);
 
   const displayName =
+    username ||
     user.user_metadata?.full_name ||
     user.user_metadata?.name ||
     user.email?.split("@")[0] ||
@@ -24,9 +49,13 @@ export default function ProfileDropdown({ user, onSignOut }: Props) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card text-sm text-muted-foreground hover:text-foreground transition-colors shadow-soft border border-border">
-          <User size={15} />
-          {t("个人中心", "Profile")}
+        <button className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-card text-sm text-muted-foreground hover:text-foreground transition-colors shadow-soft border border-border">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="" className="w-5 h-5 rounded-full object-cover" />
+          ) : (
+            <User size={15} />
+          )}
+          <span className="max-w-[100px] truncate">{displayName}</span>
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -36,13 +65,30 @@ export default function ProfileDropdown({ user, onSignOut }: Props) {
       >
         {/* Block A: User info */}
         <div className="flex items-center gap-3 p-4">
-          <div className="w-10 h-10 rounded-full bg-secondary-wash flex items-center justify-center text-secondary-deep font-display font-bold text-sm shrink-0">
-            {initials}
+          <div className="w-10 h-10 rounded-full bg-secondary-wash flex items-center justify-center text-secondary-deep font-display font-bold text-sm shrink-0 overflow-hidden">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+            ) : (
+              initials
+            )}
           </div>
           <div className="min-w-0">
             <p className="text-sm font-medium text-foreground truncate">{displayName}</p>
             <p className="text-xs text-muted-foreground truncate">{user.email}</p>
           </div>
+        </div>
+
+        <Separator />
+
+        {/* Block: Profile link */}
+        <div className="p-2">
+          <Link
+            to="/profile"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-foreground hover:bg-muted/40 transition-colors"
+          >
+            <Settings size={16} className="text-muted-foreground" />
+            {t("个人中心", "Profile Settings")}
+          </Link>
         </div>
 
         <Separator />
